@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nota POS — Kasir Simpel buat UMKM Naik Kelas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..900;1,9..144,400..700&family=IBM+Plex+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FBF9F3;
+    --bg-alt:#F1EEE2;
+    --paper:#FFFFFF;
+    --green:#2F6B4F;
+    --green-deep:#234f3b;
+    --red:#C1432A;
+    --red-deep:#9c3520;
+    --ink:#1F2A23;
+    --ink-soft:rgba(31,42,35,.7);
+    --line:rgba(31,42,35,.22);
+    --display: 'Fraunces', serif;
+    --mono: 'IBM Plex Mono', monospace;
+    --body: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--body);
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  img,svg{display:block;max-width:100%;}
+  a{color:inherit;}
+  ul{margin:0;padding:0;list-style:none;}
+  h1,h2,h3{font-family:var(--display);margin:0;font-weight:700;letter-spacing:-.01em;}
+  p{margin:0;}
+  button, input, select, textarea{font-family:inherit;font-size:1rem;}
+
+  :focus-visible{
+    outline:2.5px solid var(--red);
+    outline-offset:3px;
+  }
+
+  .wrap{
+    max-width:1120px;
+    margin:0 auto;
+    padding:0 24px;
+  }
+
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:.78rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--red);
+    font-weight:600;
+  }
+
+  /* ---------- Buttons ---------- */
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:14px 26px;
+    border-radius:6px;
+    font-weight:700;
+    font-size:.98rem;
+    text-decoration:none;
+    border:1.5px solid transparent;
+    cursor:pointer;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .btn{transition:none;}
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn-primary{
+    background:var(--green);
+    color:var(--paper);
+    box-shadow:0 3px 0 var(--green-deep);
+  }
+  .btn-primary:hover{box-shadow:0 5px 0 var(--green-deep);}
+  .btn-primary:active{transform:translateY(0);box-shadow:0 2px 0 var(--green-deep);}
+  .btn-outline{
+    background:transparent;
+    color:var(--ink);
+    border-color:var(--ink);
+  }
+  .btn-outline:hover{border-color:var(--red);color:var(--red);}
+  .btn-wa{
+    background:var(--red);
+    color:var(--paper);
+    box-shadow:0 3px 0 var(--red-deep);
+  }
+  .btn-wa:hover{box-shadow:0 5px 0 var(--red-deep);}
+  .btn-wa:active{transform:translateY(0);box-shadow:0 2px 0 var(--red-deep);}
+  .btn-block{width:100%;justify-content:center;}
+
+  /* ---------- Nav ---------- */
+  header.site{
+    position:sticky;
+    top:0;
+    z-index:40;
+    background:rgba(251,249,243,.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:16px 24px;
+    max-width:1120px;
+    margin:0 auto;
+    position:relative;
+  }
+  .logo{
+    font-family:var(--display);
+    font-size:1.35rem;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    color:var(--ink);
+    text-decoration:none;
+  }
+  .logo .mark{
+    color:var(--red);
+    font-size:1.3rem;
+  }
+  .nav-links{
+    display:flex;
+    gap:28px;
+    font-size:.92rem;
+    font-weight:600;
+  }
+  .nav-links a{
+    text-decoration:none;
+    color:var(--ink-soft);
+  }
+  .nav-links a:hover{color:var(--red);}
+  .nav-cta{display:flex;align-items:center;gap:14px;}
+  .nav-cta .btn{padding:11px 16px;font-size:.86rem;}
+  .burger{
+    display:none;
+    background:none;
+    border:1.5px solid var(--ink);
+    border-radius:5px;
+    width:38px;
+    height:38px;
+    align-items:center;
+    justify-content:center;
+    color:var(--ink);
+    cursor:pointer;
+  }
+  @media (max-width:820px){
+    .nav-links{
+      display:none;
+      position:absolute;
+      top:100%;
+      left:0;
+      right:0;
+      flex-direction:column;
+      gap:0;
+      background:var(--bg);
+      border-bottom:1px solid var(--line);
+      padding:6px 24px 14px;
+    }
+    .nav-links.open{display:flex;}
+    .nav-links a{padding:12px 0;border-bottom:1px dashed var(--line);}
+    .burger{display:flex;}
+  }
+
+  /* ---------- Torn edge divider ---------- */
+  .torn{
+    height:22px;
+    width:100%;
+    background:
+      linear-gradient(-45deg, var(--bg) 11px, transparent 0) 0 100% / 22px 22px repeat-x,
+      linear-gradient(45deg, var(--bg) 11px, transparent 0) 0 100% / 22px 22px repeat-x;
+  }
+  .torn.to-alt{
+    background:
+      linear-gradient(-45deg, var(--bg-alt) 11px, transparent 0) 0 100% / 22px 22px repeat-x,
+      linear-gradient(45deg, var(--bg-alt) 11px, transparent 0) 0 100% / 22px 22px repeat-x;
+  }
+  .torn.to-ink{
+    background:
+      linear-gradient(-45deg, var(--ink) 11px, transparent 0) 0 100% / 22px 22px repeat-x,
+      linear-gradient(45deg, var(--ink) 11px, transparent 0) 0 100% / 22px 22px repeat-x;
+  }
+  .torn.to-bg-from-ink{
+    background:
+      linear-gradient(-45deg, var(--bg) 11px, transparent 0) 0 100% / 22px 22px repeat-x,
+      linear-gradient(45deg, var(--bg) 11px, transparent 0) 0 100% / 22px 22px repeat-x;
+  }
+
+  /* ---------- Hero ---------- */
+  .hero{
+    padding:76px 0 0;
+    background:var(--bg);
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:1.05fr .95fr;
+    gap:56px;
+    align-items:center;
+  }
+  @media (max-width:900px){
+    .hero-grid{grid-template-columns:1fr;gap:40px;}
+  }
+  .hero h1{
+    font-size:clamp(2.1rem, 3.6vw + 1rem, 3.4rem);
+    line-height:1.08;
+    margin:14px 0 20px;
+    color:var(--ink);
+  }
+  .hero h1 em{
+    font-style:italic;
+    color:var(--green);
+  }
+  .hero p.sub{
+    font-size:1.12rem;
+    color:var(--ink-soft);
+    max-width:46ch;
+    margin-bottom:30px;
+  }
+  .hero-cta{
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+  }
+  @media (max-width:480px){
+    .hero-cta{flex-direction:column;}
+    .hero-cta .btn{width:100%;justify-content:center;}
+  }
+
+  /* receipt mockup */
+  .receipt{
+    background:var(--paper);
+    padding:30px 28px 0;
+    max-width:340px;
+    margin:0 auto;
+    box-shadow:0 18px 40px -14px rgba(31,42,35,.35);
+    transform:rotate(2.2deg);
+    font-family:var(--mono);
+    font-size:.88rem;
+    color:var(--ink);
+  }
+  .receipt-title{
+    text-align:center;
+    font-weight:600;
+    letter-spacing:.08em;
+    font-size:1rem;
+  }
+  .receipt-sub{
+    text-align:center;
+    font-size:.72rem;
+    color:var(--ink-soft);
+    margin-top:2px;
+    margin-bottom:14px;
+  }
+  .receipt-divider{
+    border:none;
+    border-top:1px dashed var(--line);
+    margin:10px 0;
+  }
+  .receipt-row{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    padding:6px 0;
+  }
+  .receipt-row .old{
+    text-decoration:line-through;
+    color:var(--ink-soft);
+  }
+  .receipt-row .new{
+    color:var(--green);
+    font-weight:600;
+  }
+  .receipt-total{
+    display:flex;
+    justify-content:space-between;
+    font-weight:700;
+    padding:10px 0;
+    font-size:.95rem;
+  }
+  .receipt-total .amt{color:var(--red);}
+  .receipt-thanks{
+    text-align:center;
+    font-size:.76rem;
+    letter-spacing:.05em;
+    color:var(--ink-soft);
+    padding:14px 0 22px;
+  }
+  .receipt-tear{
+    height:16px;
+    margin:0 -28px;
+    background:
+      linear-gradient(-45deg, var(--bg) 8px, transparent 0) 0 100% / 16px 16px repeat-x,
+      linear-gradient(45deg, var(--bg) 8px, transparent 0) 0 100% / 16px 16px repeat-x;
+  }
+
+  /* ---------- Section headings ---------- */
+  .section{padding:72px 0;}
+  @media (max-width:600px){
+    .section{padding:52px 0;}
+    .hero{padding-top:44px;}
+  }
+  .section-head{
+    max-width:640px;
+    margin-bottom:44px;
+  }
+  .section-head h2{
+    font-size:clamp(1.7rem, 2vw + 1rem, 2.3rem);
+    margin-top:10px;
+    color:var(--ink);
+  }
+  .section-head p{
+    color:var(--ink-soft);
+    margin-top:12px;
+    font-size:1.02rem;
+  }
+  .section-alt{background:var(--bg-alt);}
+
+  /* ---------- Pain points ---------- */
+  .pain-list{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:0;
+    border-top:1px dashed var(--line);
+  }
+  @media (max-width:720px){
+    .pain-list{grid-template-columns:1fr;}
+  }
+  .pain-item{
+    display:flex;
+    align-items:flex-start;
+    gap:14px;
+    padding:18px 20px 18px 0;
+    border-bottom:1px dashed var(--line);
+  }
+  .pain-list .pain-item:nth-child(odd){
+    border-right:1px dashed var(--line);
+    padding-right:24px;
+  }
+  .pain-list .pain-item:nth-child(even){
+    padding-left:24px;
+  }
+  @media (max-width:720px){
+    .pain-list .pain-item:nth-child(odd){border-right:none;padding-right:0;}
+    .pain-list .pain-item:nth-child(even){padding-left:0;}
+  }
+  .pain-icon{
+    font-size:1.3rem;
+    line-height:1;
+    flex-shrink:0;
+  }
+  .pain-text{font-size:1rem;color:var(--ink);}
+  .transition-note{
+    margin-top:34px;
+    padding:22px 24px;
+    background:var(--paper);
+    border-left:4px solid var(--red);
+    font-size:1.02rem;
+    color:var(--ink);
+  }
+  .transition-note strong{color:var(--red);}
+
+  /* ---------- Solution ---------- */
+  .solution-body{
+    max-width:72ch;
+    font-size:1.05rem;
+    color:var(--ink-soft);
+    margin-bottom:40px;
+  }
+  .solution-cols{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+  }
+  @media (max-width:820px){
+    .solution-cols{grid-template-columns:1fr;}
+  }
+  .solution-card{
+    background:var(--paper);
+    padding:28px 24px;
+    border:1px solid var(--line);
+    text-align:left;
+  }
+  .solution-card .stamp{
+    display:inline-block;
+    font-family:var(--mono);
+    font-size:.72rem;
+    letter-spacing:.1em;
+    font-weight:600;
+    color:var(--green);
+    border:1.5px solid var(--green);
+    padding:3px 9px;
+    border-radius:20px;
+    margin-bottom:14px;
+  }
+  .solution-card h3{
+    font-size:1.05rem;
+    font-family:var(--body);
+    font-weight:700;
+    margin-bottom:8px;
+  }
+  .solution-card p{
+    color:var(--ink-soft);
+    font-size:.95rem;
+  }
+
+  /* ---------- Quotes ---------- */
+  .quote-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+  }
+  @media (max-width:900px){
+    .quote-grid{grid-template-columns:repeat(2,1fr);}
+  }
+  @media (max-width:600px){
+    .quote-grid{grid-template-columns:1fr;}
+  }
+  .quote-card{
+    background:var(--paper);
+    padding:22px 20px;
+    font-size:.94rem;
+    color:var(--ink);
+    position:relative;
+    border:1px solid var(--line);
+  }
+  .quote-card::before{
+    content:"\201C";
+    font-family:var(--display);
+    font-size:2.6rem;
+    color:var(--red);
+    opacity:.35;
+    position:absolute;
+    top:2px;
+    left:14px;
+    line-height:1;
+  }
+  .quote-card p{
+    position:relative;
+    z-index:1;
+    padding-top:18px;
+    font-style:italic;
+  }
+  .quote-card:nth-child(3n+1){transform:rotate(-.6deg);}
+  .quote-card:nth-child(3n+2){transform:rotate(.4deg);}
+  .quote-card:nth-child(3n){transform:rotate(-.3deg);}
+
+  /* ---------- Pricing ---------- */
+  .price-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+    margin-bottom:24px;
+  }
+  @media (max-width:820px){
+    .price-grid{grid-template-columns:1fr;}
+  }
+  .price-card{
+    background:var(--paper);
+    border:1.5px solid var(--line);
+    padding:32px 28px;
+    position:relative;
+    display:flex;
+    flex-direction:column;
+  }
+  .price-card.featured{
+    border-color:var(--green);
+    box-shadow:0 14px 30px -18px rgba(47,107,79,.5);
+  }
+  .stamp-badge{
+    position:absolute;
+    top:22px;
+    right:24px;
+    font-family:var(--mono);
+    font-size:.7rem;
+    font-weight:700;
+    letter-spacing:.08em;
+    color:var(--red);
+    border:2px solid var(--red);
+    padding:4px 10px;
+    border-radius:4px;
+    transform:rotate(6deg);
+  }
+  .price-name{
+    font-family:var(--mono);
+    font-size:.8rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  .price-amount{
+    font-family:var(--display);
+    font-size:2.3rem;
+    font-weight:700;
+    color:var(--ink);
+    margin-bottom:4px;
+    display:flex;
+    align-items:baseline;
+    gap:6px;
+  }
+  .price-amount .cur{font-size:1.1rem;font-weight:600;color:var(--ink-soft);}
+  .price-fit{
+    font-size:.92rem;
+    color:var(--ink-soft);
+    margin-bottom:20px;
+    min-height:44px;
+  }
+  .price-feats{margin-bottom:26px;flex-grow:1;}
+  .price-feats li{
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    padding:9px 0;
+    border-bottom:1px dashed var(--line);
+    font-size:.92rem;
+  }
+  .price-feats li:last-child{border-bottom:none;}
+  .price-feats .tick{
+    color:var(--green);
+    font-weight:700;
+    flex-shrink:0;
+  }
+  .price-feats b{font-weight:600;}
+
+  .custom-panel{
+    background:var(--ink);
+    color:var(--bg);
+    padding:40px 36px;
+  }
+  .custom-panel .eyebrow{color:#e8a58f;}
+  .custom-panel h3{
+    font-family:var(--display);
+    font-size:1.5rem;
+    color:var(--paper);
+    margin:10px 0 8px;
+  }
+  .custom-panel > p{
+    color:rgba(251,249,243,.75);
+    max-width:60ch;
+    margin-bottom:26px;
+    font-size:1rem;
+  }
+  .segment-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+    margin-bottom:28px;
+  }
+  @media (max-width:820px){
+    .segment-grid{grid-template-columns:repeat(2,1fr);}
+  }
+  @media (max-width:520px){
+    .segment-grid{grid-template-columns:1fr;}
+  }
+  .segment-chip{
+    background:rgba(251,249,243,.06);
+    border:1px solid rgba(251,249,243,.18);
+    padding:14px 16px;
+    font-size:.9rem;
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    color:rgba(251,249,243,.92);
+  }
+  .segment-chip .ic{font-size:1.15rem;flex-shrink:0;}
+
+  /* ---------- Add-ons ---------- */
+  .addon-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+  }
+  @media (max-width:820px){
+    .addon-grid{grid-template-columns:repeat(2,1fr);}
+  }
+  @media (max-width:560px){
+    .addon-grid{grid-template-columns:1fr;}
+  }
+  .addon-chip{
+    background:var(--paper);
+    border:1px solid var(--line);
+    padding:16px 18px;
+    font-size:.92rem;
+    font-weight:600;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .addon-chip .dot{
+    width:7px;height:7px;border-radius:50%;
+    background:var(--red);
+    flex-shrink:0;
+  }
+  .addon-note{
+    margin-top:22px;
+    font-family:var(--mono);
+    font-size:.85rem;
+    color:var(--ink-soft);
+  }
+  .addon-actions{margin-top:28px;}
+
+  /* ---------- Form ---------- */
+  .form-section{
+    background:var(--bg-alt);
+  }
+  .form-wrap{
+    display:grid;
+    grid-template-columns:.85fr 1.15fr;
+    gap:48px;
+    align-items:start;
+  }
+  @media (max-width:900px){
+    .form-wrap{grid-template-columns:1fr;}
+  }
+  .form-side h2{
+    font-size:clamp(1.6rem,2vw + 1rem,2.1rem);
+    margin-bottom:14px;
+  }
+  .form-side p{color:var(--ink-soft);font-size:1.02rem;margin-bottom:24px;}
+  .form-side .side-card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    padding:22px 22px;
+    font-size:.92rem;
+    color:var(--ink-soft);
+  }
+  .form-side .side-card b{color:var(--ink);}
+
+  form.order-form{
+    background:var(--paper);
+    padding:32px;
+    border:1px solid var(--line);
+  }
+  .field{margin-bottom:20px;}
+  .field label{
+    display:block;
+    font-size:.85rem;
+    font-weight:700;
+    margin-bottom:7px;
+    color:var(--ink);
+  }
+  .field label .opt{
+    font-weight:500;
+    color:var(--ink-soft);
+    font-size:.78rem;
+  }
+  .field input[type="text"],
+  .field input[type="tel"],
+  .field select,
+  .field textarea{
+    width:100%;
+    padding:12px 14px;
+    border:1.5px solid var(--line);
+    background:var(--bg);
+    color:var(--ink);
+    border-radius:4px;
+  }
+  .field textarea{resize:vertical;min-height:90px;}
+  .field-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+  }
+  @media (max-width:520px){
+    .field-row{grid-template-columns:1fr;}
+  }
+  fieldset{
+    border:1.5px solid var(--line);
+    padding:16px 16px 8px;
+    margin:0 0 22px;
+    border-radius:4px;
+  }
+  fieldset legend{
+    font-size:.85rem;
+    font-weight:700;
+    padding:0 6px;
+  }
+  .checkbox-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:6px 14px;
+  }
+  @media (max-width:520px){
+    .checkbox-grid{grid-template-columns:1fr;}
+  }
+  .checkbox-item{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:.88rem;
+    padding:6px 0;
+  }
+  .checkbox-item input{
+    width:16px;height:16px;
+    accent-color:var(--green);
+    flex-shrink:0;
+  }
+  .form-foot-note{
+    font-size:.8rem;
+    color:var(--ink-soft);
+    margin-top:14px;
+    text-align:center;
+  }
+
+  /* ---------- Floating WA ---------- */
+  .float-wa{
+    position:fixed;
+    bottom:22px;
+    right:22px;
+    z-index:50;
+    background:var(--green);
+    color:var(--paper);
+    width:58px;
+    height:58px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 8px 22px -4px rgba(31,42,35,.45);
+    text-decoration:none;
+  }
+  .float-wa:hover{background:var(--green-deep);}
+
+  /* ---------- Footer ---------- */
+  footer.site{
+    background:var(--ink);
+    color:rgba(251,249,243,.85);
+    padding:44px 0 28px;
+  }
+  .footer-grid{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:20px;
+    padding-bottom:24px;
+    border-bottom:1px solid rgba(251,249,243,.15);
+  }
+  footer .logo{color:var(--paper);}
+  footer .logo .mark{color:#e8a58f;}
+  .footer-tagline{
+    font-family:var(--display);
+    font-style:italic;
+    font-size:1.05rem;
+    color:rgba(251,249,243,.9);
+  }
+  .footer-bottom{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
+    padding-top:20px;
+    font-size:.82rem;
+    font-family:var(--mono);
+    color:rgba(251,249,243,.55);
+  }
+
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity .5s ease, transform .5s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);}
+  @media (prefers-reduced-motion: reduce){
+    .reveal{opacity:1;transform:none;transition:none;}
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <nav class="nav">
+    <a href="#top" class="logo"><span class="mark">🧾</span>Nota POS</a>
+    <div class="nav-links" id="navLinks">
+      <a href="#fitur">Fitur</a>
+      <a href="#harga">Harga</a>
+      <a href="#addon">Add-On</a>
+      <a href="#form">Pesan</a>
+    </div>
+    <div class="nav-cta">
+      <a class="btn btn-wa" href="https://wa.me/6285117732474?text=Halo%20Nota%20POS%2C%20saya%20mau%20tanya-tanya%20soal%20paketnya" target="_blank" rel="noopener">Chat WA</a>
+      <button class="burger" id="burgerBtn" aria-label="Buka menu" aria-expanded="false">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M2 4H16M2 9H16M2 14H16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow">Kasir untuk UMKM</span>
+        <h1>Laporan Harian &amp; Bulanan? Tinggal <em>Lihat</em>, Bukan Hitung Manual Lagi.</h1>
+        <p class="sub">Nota POS — kasir simpel buat UMKM naik kelas. Nggak perlu ribet, nggak perlu belajar lama, langsung pakai hari ini juga.</p>
+        <div class="hero-cta">
+          <a href="#harga" class="btn btn-primary">Pesan Sekarang</a>
+          <a href="https://wa.me/6285117732474?text=Halo%20Nota%20POS%2C%20saya%20mau%20tanya-tanya%20soal%20paketnya" target="_blank" rel="noopener" class="btn btn-outline">Chat via WhatsApp</a>
+        </div>
+      </div>
+      <div>
+        <div class="receipt">
+          <div class="receipt-title">NOTA POS</div>
+          <div class="receipt-sub">kasir simpel buat UMKM naik kelas</div>
+          <hr class="receipt-divider">
+          <div class="receipt-row"><span>1x Nyatet manual</span><span class="old">GANTI</span></div>
+          <div class="receipt-row"><span>1x Stok kira-kira</span><span class="old">GANTI</span></div>
+          <div class="receipt-row"><span>1x Laporan pusing</span><span class="old">GANTI</span></div>
+          <div class="receipt-row"><span>1x Nota POS aktif</span><span class="new">✓ ON</span></div>
+          <hr class="receipt-divider">
+          <div class="receipt-total"><span>TOTAL REPOT</span><span class="amt">Rp 0</span></div>
+          <div class="receipt-thanks">*** TERIMA KASIH SUDAH NAIK KELAS ***</div>
+          <div class="receipt-tear"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="torn"></div>
+
+  <!-- PAIN POINT -->
+  <section class="section" id="fitur">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Rasanya familiar?</span>
+        <h2>Kamu Pasti Pernah Ngalamin Ini...</h2>
+      </div>
+      <ul class="pain-list reveal">
+        <li class="pain-item"><span class="pain-icon">📒</span><span class="pain-text">Nyatet transaksi di buku, tapi susah dicari pas lagi butuh</span></li>
+        <li class="pain-item"><span class="pain-icon">💸</span><span class="pain-text">Nggak tahu pasti untung bulan ini berapa, cuma kira-kira</span></li>
+        <li class="pain-item"><span class="pain-icon">📦</span><span class="pain-text">Stok barang sering kosong pas rame, atau numpuk pas nggak laku</span></li>
+        <li class="pain-item"><span class="pain-icon">🧾</span><span class="pain-text">Struk &amp; catatan tercecer, mau bikin laporan jadi pusing sendiri</span></li>
+        <li class="pain-item"><span class="pain-icon">🙅</span><span class="pain-text">Udah coba aplikasi kasir, tapi terlalu ribet buat dipelajari</span></li>
+      </ul>
+      <div class="transition-note reveal">
+        Sebenarnya bukan kamu yang nggak niat rapi. Cuma belum ada alat yang <strong>sesimpel dan semurah</strong> kebutuhan UMKM kayak kamu.
+      </div>
+    </div>
+  </section>
+
+  <!-- SOLUTION -->
+  <section class="section section-alt">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Solusinya</span>
+        <h2>Kenalin, Nota POS.</h2>
+      </div>
+      <p class="solution-body reveal">Aplikasi kasir yang dibuat khusus buat pelaku usaha kecil-menengah — dari warung, toko kelontong, sampai cafe &amp; resto yang mau naik kelas. Nggak perlu training, buka langsung bisa. Semudah nulis nota, cuma sekarang lebih rapi, lebih cepat, dan nggak gampang hilang.</p>
+      <div class="solution-cols reveal">
+        <div class="solution-card">
+          <span class="stamp">🧾 SIMPEL</span>
+          <h3>Tanpa Training</h3>
+          <p>Langsung jalan hari ini, nggak perlu belajar berhari-hari dulu.</p>
+        </div>
+        <div class="solution-card">
+          <span class="stamp">💰 RAMAH KANTONG</span>
+          <h3>Sekali Bayar</h3>
+          <p>Harga terjangkau, mulai dari kebutuhan paling dasar UMKM kamu.</p>
+        </div>
+        <div class="solution-card">
+          <span class="stamp">📊 OTOMATIS</span>
+          <h3>Laporan Beres Sendiri</h3>
+          <p>Untung-rugi, stok, dan tren jualan otomatis kelihatan, tinggal lihat.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUE PROP QUOTES -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Kenapa harus Nota POS</span>
+        <h2>Dengar dari Nota POS Sendiri</h2>
+      </div>
+      <div class="quote-grid reveal">
+        <div class="quote-card"><p>Nggak perlu training, buka-langsung-bisa. Semudah nulis di buku, cuma sekarang lebih rapi.</p></div>
+        <div class="quote-card"><p>Harga secangkir kopi per hari, hemat waktu dan cegah kebocoran uang lebih besar.</p></div>
+        <div class="quote-card"><p>Nota digital, bukan gantiin kebiasaan — cuma bikin catatan kamu makin rapi dan nggak gampang hilang.</p></div>
+        <div class="quote-card"><p>Lihat sendiri berapa uang yang selama ini nggak ketahuan larinya kemana.</p></div>
+        <div class="quote-card"><p>Tetap bisa transaksi meski koneksi lemot — data otomatis sinkron pas online lagi.</p></div>
+        <div class="quote-card"><p>Laporan harian &amp; bulanan otomatis jadi, tinggal lihat, nggak perlu hitung manual lagi.</p></div>
+        <div class="quote-card"><p>Nota POS kasih tau kapan harus restock, sebelum kehabisan atau numpuk sia-sia.</p></div>
+        <div class="quote-card"><p>Setiap transaksi tercatat by system, kamu bisa pantau toko dari mana aja.</p></div>
+        <div class="quote-card"><p>Data penjualan bikin kamu tahu produk mana yang bikin cuan, bukan cuma laris doang.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="section section-alt" id="harga">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Investasi</span>
+        <h2>Pilih Paket Sesuai Kebutuhan Bisnismu</h2>
+        <p>Nggak perlu langsung yang mahal. Mulai dari yang paling simpel, upgrade kapan aja pas bisnismu berkembang.</p>
+      </div>
+
+      <div class="price-grid reveal">
+        <div class="price-card">
+          <div class="price-name">Paket Starter</div>
+          <div class="price-amount"><span class="cur">Rp</span>800.000</div>
+          <div class="price-fit">Cocok untuk UMKM yang mulai serius dan ingin memantau stok, total penjualan, dan laba bersih.</div>
+          <ul class="price-feats">
+            <li><span class="tick">✓</span><span>Mode <b>Offline</b></span></li>
+            <li><span class="tick">✓</span><span>1 login (Admin)</span></li>
+            <li><span class="tick">✓</span><span>Branding default</span></li>
+            <li><span class="tick">✓</span><span>Kasir: cari produk, bayar tunai / QRIS / transfer bank (tercatat otomatis)</span></li>
+            <li><span class="tick">✓</span><span>Produk &amp; stok: CRUD dasar, stok minimum</span></li>
+            <li><span class="tick">✓</span><span>Laporan: total penjualan &amp; laba bersih</span></li>
+          </ul>
+          <a href="#form" class="btn btn-outline btn-block" data-select-tier="Paket Starter (Rp800.000)">Pilih Paket Starter</a>
+        </div>
+
+        <div class="price-card featured">
+          <span class="stamp-badge">POPULER</span>
+          <div class="price-name">Paket Growth</div>
+          <div class="price-amount"><span class="cur">Rp</span>1.800.000</div>
+          <div class="price-fit">Cocok untuk cafe, resto, dan retail yang sedang berkembang.</div>
+          <ul class="price-feats">
+            <li><span class="tick">✓</span><span>Mode <b>Offline + Online</b> (auto-backup)</span></li>
+            <li><span class="tick">✓</span><span>2 login (Admin + Kasir)</span></li>
+            <li><span class="tick">✓</span><span>Branding lengkap: logo, warna, nama toko di header</span></li>
+            <li><span class="tick">✓</span><span>Kasir: scan barcode, cetak struk, voucher &amp; diskon, upload foto produk, catatan pelanggan</span></li>
+            <li><span class="tick">✓</span><span>Produk &amp; stok: generate barcode, resep/BOM otomatis, kelola bahan baku</span></li>
+            <li><span class="tick">✓</span><span>Laporan: neraca, arus kas, riwayat transaksi, produk terlaris, grafik tren, margin per produk</span></li>
+          </ul>
+          <a href="#form" class="btn btn-primary btn-block" data-select-tier="Paket Growth (Rp1.800.000)">Pilih Paket Growth</a>
+        </div>
+      </div>
+
+      <div class="custom-panel reveal">
+        <span class="eyebrow">Kebutuhan khusus</span>
+        <h3>Custom Development</h3>
+        <p>Punya kebutuhan khusus di luar paket di atas? Kami bisa buatkan sesuai kebutuhan bisnismu — berikut segmen UMKM lain yang sering butuh POS custom:</p>
+        <div class="segment-grid">
+          <div class="segment-chip"><span class="ic">🏪</span><span>Minimarket / toko sembako dengan banyak varian &amp; supplier</span></div>
+          <div class="segment-chip"><span class="ic">💇</span><span>Salon, barbershop, klinik kecantikan (booking + kasir jadi satu)</span></div>
+          <div class="segment-chip"><span class="ic">👕</span><span>Laundry (tracking status cucian + kasir)</span></div>
+          <div class="segment-chip"><span class="ic">🏭</span><span>UMKM produksi/rumahan dengan pre-order &amp; konsinyasi</span></div>
+          <div class="segment-chip"><span class="ic">🏬</span><span>Bisnis multi-cabang yang butuh laporan terpusat</span></div>
+          <div class="segment-chip"><span class="ic">🎪</span><span>Event/bazar dengan kebutuhan kasir mobile sementara</span></div>
+        </div>
+        <a href="#form" class="btn btn-wa" data-select-tier="Custom Development">Konsultasi Kebutuhan Custom</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ADD-ONS -->
+  <section class="section" id="addon">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Lengkapi kasirmu</span>
+        <h2>Add-On Tambahan</h2>
+        <p>Pilih sesuai kebutuhan — bisa ditambahkan ke paket manapun. Hubungi kami untuk info harga.</p>
+      </div>
+      <div class="addon-grid reveal">
+        <div class="addon-chip"><span class="dot"></span>Cetak Struk Thermal Printer</div>
+        <div class="addon-chip"><span class="dot"></span>Stok Real-Time + Email Alert</div>
+        <div class="addon-chip"><span class="dot"></span>Multi-Cabang / Multi-Outlet</div>
+        <div class="addon-chip"><span class="dot"></span>Login Kasir Tambahan</div>
+        <div class="addon-chip"><span class="dot"></span>Custom Laporan</div>
+        <div class="addon-chip"><span class="dot"></span>Manajemen Meja</div>
+        <div class="addon-chip"><span class="dot"></span>Shift &amp; Absensi Kasir</div>
+        <div class="addon-chip"><span class="dot"></span>Migrasi Data Sistem Lama</div>
+        <div class="addon-chip"><span class="dot"></span>Training Onsite Tambahan</div>
+        <div class="addon-chip"><span class="dot"></span>Hardware Bundling (printer struk, tablet, dll)</div>
+        <div class="addon-chip"><span class="dot"></span>Custom Development</div>
+      </div>
+      <p class="addon-note reveal">*Harga add-on disesuaikan dengan kebutuhan — tanya langsung ke tim kami.</p>
+      <div class="addon-actions reveal">
+        <a href="https://wa.me/6285117732474?text=Halo%20Nota%20POS%2C%20saya%20mau%20tanya%20soal%20add-on%20tambahan" target="_blank" rel="noopener" class="btn btn-wa">Tanya Add-On via WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="torn to-alt"></div>
+
+  <!-- FORM -->
+  <section class="section form-section" id="form">
+    <div class="wrap form-wrap">
+      <div class="form-side reveal">
+        <span class="eyebrow">Konsultasi gratis</span>
+        <h2>Fokus Layani Pelanggan, Biar Nota POS yang Urus Hitungannya.</h2>
+        <p>Isi form di samping, tim kami akan hubungi kamu untuk bantu pilih paket yang paling pas.</p>
+        <div class="side-card">
+          <b>Gimana prosesnya?</b><br><br>
+          1. Isi form pesanan kamu<br>
+          2. Klik kirim, otomatis terhubung ke WhatsApp kami<br>
+          3. Tim Nota POS konfirmasi &amp; bantu setup<br><br>
+          Atau langsung chat aja kalau mau tanya-tanya dulu.
+        </div>
+      </div>
+
+      <form class="order-form reveal" id="orderForm">
+        <div class="field-row">
+          <div class="field">
+            <label for="nama">Nama</label>
+            <input type="text" id="nama" name="nama" required placeholder="Nama lengkap kamu">
+          </div>
+          <div class="field">
+            <label for="usaha">Nama Usaha</label>
+            <input type="text" id="usaha" name="usaha" required placeholder="Nama warung/toko/cafe">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="wa">No. WhatsApp</label>
+            <input type="tel" id="wa" name="wa" required placeholder="08xx-xxxx-xxxx">
+          </div>
+          <div class="field">
+            <label for="kota">Kota / Daerah</label>
+            <input type="text" id="kota" name="kota" required placeholder="Cth: Surabaya">
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="jenis">Jenis Usaha</label>
+            <input type="text" id="jenis" name="jenis" placeholder="Cth: Warung, Cafe, Retail">
+          </div>
+          <div class="field">
+            <label for="website">Website <span class="opt">(kalau ada)</span></label>
+            <input type="text" id="website" name="website" placeholder="www.usahakamu.com">
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="sosmed">Social Media <span class="opt">(Instagram / TikTok / Facebook, opsional)</span></label>
+          <input type="text" id="sosmed" name="sosmed" placeholder="@usernameinstagram, @usernametiktok, dll">
+        </div>
+
+        <div class="field">
+          <label for="tier">Pilih Paket</label>
+          <select id="tier" name="tier" required>
+            <option value="">— Pilih paket —</option>
+            <option value="Paket Starter (Rp800.000)">Paket Starter — Rp800.000</option>
+            <option value="Paket Growth (Rp1.800.000)">Paket Growth — Rp1.800.000</option>
+            <option value="Custom Development">Custom Development</option>
+          </select>
+        </div>
+
+        <fieldset>
+          <legend>Add-On yang Diminati (boleh pilih lebih dari satu)</legend>
+          <div class="checkbox-grid">
+            <label class="checkbox-item"><input type="checkbox" name="addon" value="Cetak Struk Thermal Printer">Cetak Struk Thermal Printer</label>
+            <label class="checkbox-item"><input type="checkbox" name="addon" value="Stok Real-Time + Email Alert">Stok Real-Time + Email Alert</label>
+            <label class="checkbox-item"><input type="checkbox" name="addon" value="Multi-Cabang / Multi-Outlet">Multi-Cabang / Multi-Outlet</label>
+            <label class="checkbox-item"><input type="checkbox" name="addon" value="Login Kasir Tambahan">Login Kasir Tambahan</label>
+            <label class="checkbox-item"><input type="checkbox" name="addon" value="Custom Laporan">Custom Laporan</label>
+            <label class="checkbox-item"><input type="checkbox" name="addon" value="Manajemen Meja">Manajemen Meja</label>
+            <label class="checkbox-item"><input type="checkbox" name="addon" value="Shift & Absensi Kasir">Shift &amp; Absensi Kasir</label>
+            <label class="checkbox-item"><input type="checkbox" name="addon" value="Migrasi Data Sistem Lama">Migrasi Data Sistem Lama</label>
+            <label class="checkbox-item"><input type="checkbox" name="addon" value="Training Onsite Tambahan">Training Onsite Tambahan</label>
+            <label class="checkbox-item"><input type="checkbox" name="addon" value="Hardware Bundling">Hardware Bundling (printer, tablet, dll)</label>
+            <label class="checkbox-item"><input type="checkbox" name="addon" value="Custom Development">Custom Development</label>
+          </div>
+        </fieldset>
+
+        <div class="field">
+          <label for="catatan">Catatan Tambahan (opsional)</label>
+          <textarea id="catatan" name="catatan" placeholder="Ceritakan kebutuhan usaha kamu, misalnya jumlah kasir, jenis usaha, dll."></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Kirim &amp; Konsultasi via WhatsApp</button>
+        <p class="form-foot-note">Klik kirim, kamu akan diarahkan ke WhatsApp kami dengan detail pesanan terisi otomatis.</p>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<a href="https://wa.me/6285117732474?text=Halo%20Nota%20POS%2C%20saya%20mau%20tanya-tanya%20soal%20kasir%20untuk%20usaha%20saya" target="_blank" rel="noopener" class="float-wa" aria-label="Chat via WhatsApp">
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91C2.13 13.66 2.59 15.36 3.45 16.86L2.05 22L7.3 20.62C8.75 21.41 10.38 21.83 12.04 21.83C17.5 21.83 21.95 17.38 21.95 11.92C21.95 9.27 20.92 6.78 19.05 4.91C17.18 3.03 14.69 2 12.04 2ZM12.04 20.15C10.56 20.15 9.11 19.76 7.85 19.01L7.55 18.83L4.42 19.65L5.26 16.6L5.06 16.29C4.24 15 3.8 13.47 3.8 11.91C3.8 7.37 7.5 3.67 12.05 3.67C14.25 3.67 16.32 4.53 17.87 6.09C19.42 7.65 20.28 9.71 20.28 11.92C20.27 16.46 16.58 20.15 12.04 20.15ZM16.56 13.99C16.32 13.87 15.15 13.29 14.93 13.21C14.71 13.13 14.55 13.09 14.39 13.33C14.23 13.57 13.77 14.11 13.63 14.27C13.49 14.43 13.35 14.45 13.11 14.33C12.87 14.21 12.1 13.96 11.19 13.15C10.48 12.52 10 11.74 9.86 11.5C9.72 11.26 9.84 11.13 9.96 11.01C10.07 10.9 10.2 10.72 10.32 10.58C10.44 10.44 10.48 10.34 10.56 10.18C10.64 10.02 10.6 9.88 10.54 9.76C10.48 9.64 10 8.46 9.8 7.98C9.6 7.51 9.4 7.58 9.25 7.57C9.11 7.56 8.95 7.56 8.79 7.56C8.63 7.56 8.37 7.62 8.15 7.86C7.93 8.1 7.31 8.68 7.31 9.86C7.31 11.04 8.17 12.18 8.29 12.34C8.41 12.5 10 14.93 12.42 15.97C13 16.22 13.45 16.37 13.8 16.48C14.38 16.67 14.91 16.64 15.33 16.58C15.8 16.51 16.76 16 16.96 15.44C17.16 14.88 17.16 14.4 17.1 14.3C17.04 14.2 16.88 14.14 16.64 14.02L16.56 13.99Z" fill="currentColor"/></svg>
+</a>
+
+<footer class="site">
+  <div class="wrap">
+    <div class="footer-grid">
+      <a href="#top" class="logo"><span class="mark">🧾</span>Nota POS</a>
+      <div class="footer-tagline">"Kasir Simpel buat UMKM Naik Kelas."</div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Nota POS. Semua hak dilindungi.</span>
+      <span>WA: +62 851-1773-2474</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Reveal on scroll
+  const revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window){
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting){
+          e.target.classList.add('in');
+          io.unobserve(e.target);
+        }
+      });
+    }, {threshold:.12});
+    revealEls.forEach(el=>io.observe(el));
+  } else {
+    revealEls.forEach(el=>el.classList.add('in'));
+  }
+
+  // Mobile nav toggle
+  const burgerBtn = document.getElementById('burgerBtn');
+  const navLinks = document.getElementById('navLinks');
+  if(burgerBtn && navLinks){
+    burgerBtn.addEventListener('click', ()=>{
+      const isOpen = navLinks.classList.toggle('open');
+      burgerBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+    navLinks.querySelectorAll('a').forEach(a=>{
+      a.addEventListener('click', ()=>{
+        navLinks.classList.remove('open');
+        burgerBtn.setAttribute('aria-expanded', 'false');
+      });
+    });
+  }
+
+  // Pre-select tier from pricing CTA buttons
+  document.querySelectorAll('[data-select-tier]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const val = btn.getAttribute('data-select-tier');
+      const select = document.getElementById('tier');
+      if(select){ select.value = val; }
+    });
+  });
+
+  // Form submit -> build WhatsApp message
+  const form = document.getElementById('orderForm');
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    const nama = document.getElementById('nama').value.trim();
+    const usaha = document.getElementById('usaha').value.trim();
+    const wa = document.getElementById('wa').value.trim();
+    const kota = document.getElementById('kota').value.trim();
+    const jenis = document.getElementById('jenis').value.trim();
+    const website = document.getElementById('website').value.trim();
+    const sosmed = document.getElementById('sosmed').value.trim();
+    const tier = document.getElementById('tier').value;
+    const catatan = document.getElementById('catatan').value.trim();
+    const addons = Array.from(document.querySelectorAll('input[name="addon"]:checked')).map(i=>i.value);
+
+    let msg = "Halo Nota POS, saya mau pesan:\n";
+    msg += "Nama: " + nama + "\n";
+    msg += "Nama Usaha: " + usaha + "\n";
+    msg += "No. WhatsApp: " + wa + "\n";
+    msg += "Kota/Daerah: " + kota + "\n";
+    if(jenis) msg += "Jenis Usaha: " + jenis + "\n";
+    if(website) msg += "Website: " + website + "\n";
+    if(sosmed) msg += "Social Media: " + sosmed + "\n";
+    msg += "Paket: " + (tier || "-") + "\n";
+    msg += "Add-On: " + (addons.length ? addons.join(", ") : "-") + "\n";
+    if(catatan) msg += "Catatan: " + catatan + "\n";
+
+    const url = "https://wa.me/6285117732474?text=" + encodeURIComponent(msg);
+    // location.href works reliably on both mobile and desktop browsers,
+    // avoiding popup blockers that can interfere with window.open()
+    window.location.href = url;
+  });
+</script>
+
+</body>
+</html>
