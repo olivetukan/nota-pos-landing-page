@@ -1,0 +1,20 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+desktop.ini
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+
+# Node (jaga-jaga kalau nanti pakai build tool)
+node_modules/
+npm-debug.log
+
+# Env / config sensitif
+.env
